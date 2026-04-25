@@ -204,9 +204,9 @@ export default function News() {
                 rel="noopener noreferrer"
                 className="flex items-center justify-between p-8 bg-white rounded-3xl border border-gray-100 hover:border-orange-500 hover:shadow-lg transition-all group"
               >
-                <div className="space-y-1">
+                <div className="space-y-1 min-w-0 overflow-hidden">
                   <p className="text-xs font-black uppercase tracking-widest text-gray-400 group-hover:text-orange-500 transition-colors">{channel.name}</p>
-                  <p className="text-lg font-bold tracking-tight">{channel.label}</p>
+                  <p className="text-base font-bold tracking-tight truncate">{channel.label}</p>
                 </div>
                 <div className="text-gray-400 group-hover:text-orange-500 transition-colors">{channel.icon}</div>
               </a>
