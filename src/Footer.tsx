@@ -11,7 +11,7 @@ export default function Footer() {
             <Link to="/">
               <img src="./logo-white.svg" alt="LIKELION US" className="h-5 w-auto" />
             </Link>
-            <p className="text-sm text-gray-400 leading-relaxed max-w-xs">
+            <p className="text-sm text-gray-400 leading-relaxed max-w-xs mt-4">
               From Possibility to Reality. A global student community for technology education.
             </p>
             <div className="flex space-x-3">
