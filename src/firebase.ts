@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
+import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
   projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
@@ -13,17 +14,14 @@ const firebaseConfig = {
 
 const FIRESTORE_DB_ID = import.meta.env.VITE_FIREBASE_DB_ID;
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
 export const auth = getAuth(app);
 export const db = getFirestore(app, FIRESTORE_DB_ID);
+export const storage = getStorage(app);
 
 export enum OperationType {
-  CREATE = 'create',
-  UPDATE = 'update',
-  DELETE = 'delete',
-  LIST = 'list',
-  GET = 'get',
-  WRITE = 'write',
+  CREATE = 'create', UPDATE = 'update', DELETE = 'delete',
+  LIST = 'list', GET = 'get', WRITE = 'write',
 }
 
 export function handleFirestoreError(error: unknown, operationType: OperationType, path: string | null) {
@@ -36,14 +34,11 @@ export function handleFirestoreError(error: unknown, operationType: OperationTyp
       isAnonymous: auth.currentUser?.isAnonymous,
       tenantId: auth.currentUser?.tenantId,
       providerInfo: auth.currentUser?.providerData.map(p => ({
-        providerId: p.providerId,
-        displayName: p.displayName,
-        email: p.email,
-        photoUrl: p.photoURL,
+        providerId: p.providerId, displayName: p.displayName,
+        email: p.email, photoUrl: p.photoURL,
       })) || [],
     },
-    operationType,
-    path,
+    operationType, path,
   };
   console.error('Firestore Error:', JSON.stringify(errInfo));
   throw new Error(JSON.stringify(errInfo));
