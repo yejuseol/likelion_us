@@ -1,0 +1,27 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// Firestore Security Rules — copy/paste into:
+//   Firebase Console → Firestore Database → Rules → Publish
+// ─────────────────────────────────────────────────────────────────────────────
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Users — only the owner can read/write their own profile
+    match /users/{userId} {
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+
+    // Contact inquiries — anyone (incl. signed-out visitors) can create.
+    // Only admins (signed-in console) can read/list — done from the Firebase Console.
+    match /contactInquiries/{id} {
+      allow create: if true;
+      allow read, update, delete: if false; // view via Firebase Console only
+    }
+
+    // Partnership inquiries — same pattern
+    match /partnerInquiries/{id} {
+      allow create: if true;
+      allow read, update, delete: if false; // view via Firebase Console only
+    }
+  }
+}

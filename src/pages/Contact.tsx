@@ -1,26 +1,42 @@
 import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Send, CheckCircle, Mail, Instagram, Linkedin } from 'lucide-react';
+import { db } from '../firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
-// TODO: replace with real Google Form URL (optional)
+// TODO: replace with real Google Form URL (optional alternative)
 const CONTACT_FORM_URL = 'https://docs.google.com/forms/d/REPLACE_ME/viewform';
 
 export default function Contact() {
   const [formData, setFormData] = useState({ email: '', message: '' });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
-    // Until Google Form is connected, open mailto so messages aren't lost.
-    const body = encodeURIComponent(`${formData.message}\n\n— ${formData.email}`);
-    window.location.href = `mailto:simba@likelion.net?subject=${encodeURIComponent('Contact from LIKELION US site')}&body=${body}`;
-    setTimeout(() => { setSubmitted(true); setSubmitting(false); }, 500);
+    setError(null);
+    try {
+      // Save to Firestore — view at Firebase Console → Firestore → contactInquiries
+      await addDoc(collection(db, 'contactInquiries'), {
+        email: formData.email,
+        message: formData.message,
+        createdAt: serverTimestamp(),
+        source: 'website-contact',
+        userAgent: navigator.userAgent,
+      });
+      setSubmitted(true);
+    } catch (err: any) {
+      console.error('Contact submit error:', err);
+      setError('Could not submit. Please email simba@likelion.net directly.');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   const inputClass = 'w-full border-b border-gray-200 py-3 text-sm focus:outline-none focus:border-orange-500 transition-colors bg-transparent';
@@ -49,10 +65,11 @@ export default function Contact() {
             <div className="bg-white rounded-3xl p-12 text-center border border-gray-100 space-y-3">
               <CheckCircle size={48} className="text-green-500 mx-auto" />
               <h3 className="text-2xl font-black uppercase tracking-tight">Thanks!</h3>
-              <p className="text-sm text-gray-500">Your email client should have opened with the message. We'll get back to you soon.</p>
+              <p className="text-sm text-gray-500">Your message has been received. We'll get back to you within a few days.</p>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-8 md:p-10 space-y-6 border border-gray-100 shadow-sm">
+              {error && <div className="bg-red-50 text-red-500 p-4 rounded-xl text-sm">{error}</div>}
               <div className="space-y-1">
                 <label className="text-xs font-bold uppercase tracking-widest text-gray-400">Email *</label>
                 <input required type="email" name="email" value={formData.email} onChange={handleChange}
