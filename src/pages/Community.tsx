@@ -78,15 +78,20 @@ export default function Community() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div className="relative order-2 md:order-1 bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
-              <div className="relative w-full aspect-[1.6/1] bg-gray-50 rounded-2xl overflow-hidden">
-                {/* Stylized US map */}
-                <svg viewBox="0 0 1000 600" className="w-full h-full opacity-20">
+              <div className="relative w-full aspect-[5/3] bg-gray-50 rounded-2xl overflow-hidden">
+                {/* US continental outline (approximate but US-shaped) */}
+                <svg viewBox="0 0 1000 600" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
+                  {/* Continental US */}
                   <path
-                    d="M100,150 L150,140 L200,135 L300,145 L400,135 L500,145 L600,135 L700,145 L800,135 L850,130 L880,140 L900,160 L910,200 L920,250 L930,300 L920,350 L900,400 L880,450 L850,480 L820,520 L800,550 L780,570 L750,560 L700,540 L650,530 L600,540 L550,550 L500,560 L450,550 L400,540 L350,530 L300,520 L250,510 L200,500 L150,480 L120,450 L100,400 L90,350 L80,300 L90,250 L100,200 Z"
-                    className="fill-gray-400"
+                    d="M 175,100 L 165,140 L 150,180 L 142,220 L 132,260 L 138,295 L 158,335 L 195,385 L 218,408 L 280,403 L 360,402 L 410,408 L 440,440 L 475,470 L 520,495 L 545,490 L 580,485 L 605,495 L 635,485 L 690,475 L 740,475 L 750,505 L 762,540 L 775,565 L 790,555 L 795,515 L 795,475 L 803,455 L 825,425 L 845,400 L 830,375 L 842,355 L 855,335 L 875,318 L 895,295 L 920,272 L 945,225 L 955,185 L 925,155 L 860,150 L 805,155 L 760,170 L 720,175 L 705,165 L 660,155 L 615,140 L 565,130 L 510,120 L 440,108 L 360,100 L 280,95 L 210,95 Z"
+                    className="fill-gray-200"
                   />
+                  {/* Hawaii inset box (bottom-left corner) */}
+                  <rect x="100" y="535" width="120" height="50" rx="6" className="fill-gray-200" />
+                  <text x="160" y="595" textAnchor="middle" className="fill-gray-400 text-[9px] font-bold uppercase tracking-widest">Hawaii</text>
                 </svg>
-                {/* School pins */}
+
+                {/* School pins (positioned by %) */}
                 {schools.map((school, i) => (
                   <motion.div
                     key={`${school.name}-${i}`}
@@ -96,7 +101,7 @@ export default function Community() {
                     style={{ left: `${school.x}%`, top: `${school.y}%` }}
                     className="absolute group cursor-pointer z-20"
                   >
-                    <div className="w-2 h-2 -translate-x-1 -translate-y-1 bg-orange-500 rounded-full shadow-[0_0_10px_rgba(249,115,22,0.7)] ring-2 ring-orange-500/20 hover:scale-150 transition-transform" />
+                    <div className="w-2.5 h-2.5 -translate-x-1/2 -translate-y-1/2 bg-orange-500 rounded-full shadow-[0_0_8px_rgba(249,115,22,0.8)] ring-2 ring-white hover:scale-150 transition-transform" />
                     <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 bg-black text-white text-[10px] font-bold rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none shadow-xl z-30">
                       {school.name}
                     </div>
