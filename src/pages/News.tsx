@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Instagram, ArrowLeft, Calendar, User, ChevronRight, Linkedin, MessageCircle, Link as LinkIcon, ExternalLink } from 'lucide-react';
+import { Instagram, ArrowLeft, Calendar, User, ChevronRight, Linkedin, MessageCircle, Link as LinkIcon, ExternalLink, Mail } from 'lucide-react';
 import { newsImages, eventPhotos } from '../data/photos';
+
+const NEWSLETTER_URL = 'https://page.stibee.com/subscriptions/492103';
 
 const newsItems = [
   {
@@ -74,7 +76,7 @@ export default function News() {
             <p className="text-xs font-bold uppercase tracking-widest text-orange-400 mb-3">Updates</p>
             <h1 className="text-5xl md:text-7xl font-black tracking-tighter uppercase leading-none">
               News &<br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">Notice</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-orange-600">Events</span>
             </h1>
           </motion.div>
         </div>
@@ -86,6 +88,10 @@ export default function News() {
           <AnimatePresence mode="wait">
             {!selectedNewsId ? (
               <motion.div key="list" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+                <div className="mb-8">
+                  <p className="text-xs font-bold uppercase tracking-widest text-orange-500 mb-2">Latest</p>
+                  <h2 className="text-2xl md:text-3xl font-black tracking-tighter uppercase">News & Notice</h2>
+                </div>
                 <div className="hidden md:grid grid-cols-12 gap-4 px-6 py-3 border-b-2 border-black text-[10px] font-black uppercase tracking-widest text-gray-400 mb-2">
                   <div className="col-span-1">No.</div>
                   <div className="col-span-2">Category</div>
@@ -94,11 +100,8 @@ export default function News() {
                 </div>
                 <div className="divide-y divide-gray-50">
                   {newsItems.map((item) => (
-                    <div
-                      key={item.id}
-                      onClick={() => setSelectedNewsId(item.id)}
-                      className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 transition-colors cursor-pointer group items-center rounded-xl"
-                    >
+                    <div key={item.id} onClick={() => setSelectedNewsId(item.id)}
+                      className="grid grid-cols-1 md:grid-cols-12 gap-4 px-6 py-5 hover:bg-gray-50 transition-colors cursor-pointer group items-center rounded-xl">
                       <div className="hidden md:block col-span-1 text-xs font-mono text-gray-300">
                         {String(item.id).padStart(2, '0')}
                       </div>
@@ -157,17 +160,78 @@ export default function News() {
         </div>
       </section>
 
+      {/* Events — GRID LAYOUT (was horizontal scroll) */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="mb-12">
+            <p className="text-xs font-bold uppercase tracking-widest text-orange-500 mb-3">Past & Upcoming</p>
+            <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-4">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter uppercase">Events</h2>
+              <a href="https://luma.com/likelionus" target="_blank" rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-sm font-bold text-gray-400 hover:text-orange-500 transition-colors">
+                View all on Luma <ExternalLink size={14} />
+              </a>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-5">
+            {eventPhotos.map((event, i) => (
+              <motion.a
+                key={event.id}
+                href={event.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                className="group relative aspect-square overflow-hidden rounded-3xl shadow-sm border border-gray-100 bg-white hover:shadow-xl hover:shadow-orange-500/10 transition-all"
+              >
+                <img src={event.image} alt={event.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-5">
+                  <p className="text-white text-xs font-bold leading-snug line-clamp-3">{event.title}</p>
+                  <span className="mt-2 inline-flex items-center gap-1 text-orange-400 text-[10px] font-black uppercase tracking-widest">
+                    View Event <ExternalLink size={10} />
+                  </span>
+                </div>
+              </motion.a>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* Connect With Us */}
-      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-gray-50 border-t border-gray-100">
+      <section className="py-24 px-4 sm:px-6 lg:px-8 bg-white border-t border-gray-100">
         <div className="max-w-7xl mx-auto space-y-12">
           <div className="text-center space-y-3">
             <p className="text-xs font-bold uppercase tracking-widest text-orange-500">Stay Connected</p>
             <h2 className="text-4xl md:text-5xl font-black tracking-tighter uppercase">Connect With Us</h2>
           </div>
+
+          {/* Newsletter callout */}
+          <div className="bg-gradient-to-br from-orange-500 to-orange-600 rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-center justify-between gap-6 shadow-lg shadow-orange-500/20">
+            <div className="space-y-2 text-white">
+              <p className="text-xs font-black uppercase tracking-widest text-orange-100">Newsletter</p>
+              <h3 className="text-2xl md:text-3xl font-black tracking-tight">
+                Get updates in your inbox
+              </h3>
+              <p className="text-sm text-orange-50/90 max-w-md">
+                Subscribe to our newsletter to stay updated on programs, events, and opportunities.
+              </p>
+            </div>
+            <a href={NEWSLETTER_URL} target="_blank" rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 bg-white text-black px-7 py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-black hover:text-white transition-all shadow-md flex-shrink-0">
+              <Mail size={16} />
+              <span>Subscribe</span>
+            </a>
+          </div>
+
+          {/* Channels */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
             {channels.map((channel) => (
               <a key={channel.name} href={channel.href} target="_blank" rel="noopener noreferrer"
-                className="flex items-center justify-between p-7 bg-white rounded-3xl border border-gray-100 hover:border-orange-400 hover:shadow-xl hover:shadow-orange-500/5 transition-all group">
+                className="flex items-center justify-between p-7 bg-gray-50 rounded-3xl border border-gray-100 hover:border-orange-400 hover:bg-white hover:shadow-xl hover:shadow-orange-500/5 transition-all group">
                 <div className="space-y-1 min-w-0 overflow-hidden">
                   <p className="text-[10px] font-black uppercase tracking-widest text-gray-400 group-hover:text-orange-500 transition-colors">{channel.name}</p>
                   <p className="text-base font-bold tracking-tight truncate">{channel.label}</p>
@@ -176,44 +240,6 @@ export default function News() {
               </a>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Events Gallery — real Luma thumbnails */}
-      <section className="py-24 bg-white overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-orange-500 mb-3">Past & Upcoming</p>
-          <div className="flex items-end justify-between">
-            <h2 className="text-4xl md:text-5xl font-black tracking-tighter uppercase">Events</h2>
-            <a href="https://luma.com/likelionus" target="_blank" rel="noopener noreferrer"
-              className="flex items-center gap-1.5 text-sm font-bold text-gray-400 hover:text-orange-500 transition-colors">
-              View all <ExternalLink size={14} />
-            </a>
-          </div>
-        </div>
-
-        <div className="relative flex whitespace-nowrap">
-          <motion.div
-            animate={{ x: [0, -(272 + 20) * eventPhotos.length] }}
-            transition={{ x: { repeat: Infinity, repeatType: 'loop', duration: 50, ease: 'linear' } }}
-            className="flex gap-5 px-4"
-          >
-            {[...eventPhotos, ...eventPhotos].map((event, idx) => (
-              <a key={`${event.id}-${idx}`} href={event.link} target="_blank" rel="noopener noreferrer"
-                className="relative flex-none w-56 md:w-68 aspect-square overflow-hidden rounded-3xl shadow-sm border border-gray-100 group"
-                style={{ width: '272px' }}
-              >
-                <img src={event.image} alt={event.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-5">
-                  <p className="text-white text-xs font-bold leading-snug line-clamp-2">{event.title}</p>
-                  <span className="mt-2 inline-flex items-center gap-1 text-orange-400 text-[10px] font-black uppercase tracking-widest">
-                    View Event <ExternalLink size={10} />
-                  </span>
-                </div>
-              </a>
-            ))}
-          </motion.div>
         </div>
       </section>
     </div>

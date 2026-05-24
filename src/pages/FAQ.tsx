@@ -172,7 +172,7 @@ export default function FAQ() {
           <h2 className="text-3xl md:text-5xl font-black tracking-tighter uppercase">Still have questions?</h2>
           <p className="text-xl text-gray-600">We're here to help. Reach out to us anytime.</p>
           <a
-            href="mailto:simba@likelion.net"
+            href="#/contact"
             className="inline-block bg-black text-white px-10 py-5 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-orange-500 transition-all"
           >
             Contact Us
