@@ -6,10 +6,24 @@ import { auth } from './firebase';
 import { onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth';
 import AuthModal from './AuthModal';
 
-const navLinks = [
-  { name: 'About Us', path: '/' },
+interface NavItem {
+  name: string;
+  path?: string;
+  children?: { name: string; path: string }[];
+}
+
+const navItems: NavItem[] = [
+  {
+    name: 'About',
+    children: [
+      { name: 'About Us', path: '/' },
+      { name: 'What We Do', path: '/what-we-do' },
+    ],
+  },
   { name: 'Community', path: '/community' },
   { name: 'News & Events', path: '/news' },
+  { name: 'Partners', path: '/partners' },
+  { name: 'Contact', path: '/contact' },
   { name: 'FAQ', path: '/faq' },
 ];
 
@@ -20,7 +34,10 @@ export default function Navbar() {
   const [user, setUser] = useState<FirebaseUser | null>(null);
   const [scrolled, setScrolled] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
+  const [aboutOpen, setAboutOpen] = useState(false);
+  const [mobileAboutOpen, setMobileAboutOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
+  const aboutRef = useRef<HTMLDivElement>(null);
   const location = useLocation();
 
   useEffect(() => {
@@ -36,9 +53,8 @@ export default function Navbar() {
 
   useEffect(() => {
     const handler = (e: MouseEvent) => {
-      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
-        setProfileOpen(false);
-      }
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) setProfileOpen(false);
+      if (aboutRef.current && !aboutRef.current.contains(e.target as Node)) setAboutOpen(false);
     };
     document.addEventListener('mousedown', handler);
     return () => document.removeEventListener('mousedown', handler);
@@ -55,6 +71,9 @@ export default function Navbar() {
     setIsOpen(false);
   };
 
+  const isActive = (path?: string) => path && location.pathname === path;
+  const isAboutActive = location.pathname === '/' || location.pathname === '/what-we-do';
+
   return (
     <>
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -63,40 +82,78 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-20">
 
-            {/* Logo */}
             <Link to="/" className="flex items-center">
               <img src="./logo-color.svg" alt="LIKELION US" className="h-6 w-auto" />
             </Link>
 
             {/* Desktop Nav */}
-            <div className="hidden md:flex items-center space-x-1">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.path}
-                  to={link.path}
-                  className={`relative px-4 py-2 text-sm font-semibold transition-colors rounded-full ${
-                    location.pathname === link.path
-                      ? 'text-orange-500'
-                      : 'text-gray-500 hover:text-black'
-                  }`}
-                >
-                  {link.name}
-                  {location.pathname === link.path && (
-                    <motion.div
-                      layoutId="nav-indicator"
-                      className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-orange-500 rounded-full"
-                    />
-                  )}
-                </Link>
-              ))}
+            <div className="hidden lg:flex items-center space-x-1">
+              {navItems.map((item) => {
+                if (item.children) {
+                  return (
+                    <div key={item.name} className="relative" ref={aboutRef}>
+                      <button
+                        onClick={() => setAboutOpen(!aboutOpen)}
+                        className={`flex items-center gap-1 px-3 py-2 text-sm font-semibold transition-colors rounded-full ${
+                          isAboutActive ? 'text-orange-500' : 'text-gray-500 hover:text-black'
+                        }`}
+                      >
+                        {item.name}
+                        <ChevronDown size={13} className={`transition-transform ${aboutOpen ? 'rotate-180' : ''}`} />
+                      </button>
+                      <AnimatePresence>
+                        {aboutOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 8, scale: 0.96 }}
+                            animate={{ opacity: 1, y: 0, scale: 1 }}
+                            exit={{ opacity: 0, y: 8, scale: 0.96 }}
+                            transition={{ duration: 0.15 }}
+                            className="absolute left-0 mt-2 w-48 bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 overflow-hidden"
+                          >
+                            {item.children.map((child) => (
+                              <Link
+                                key={child.path}
+                                to={child.path}
+                                onClick={() => setAboutOpen(false)}
+                                className={`block px-4 py-3 text-sm font-medium hover:bg-gray-50 transition-colors ${
+                                  isActive(child.path) ? 'text-orange-500' : 'text-gray-700 hover:text-orange-500'
+                                }`}
+                              >
+                                {child.name}
+                              </Link>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  );
+                }
+                return (
+                  <Link
+                    key={item.path}
+                    to={item.path!}
+                    className={`relative px-3 py-2 text-sm font-semibold transition-colors rounded-full ${
+                      isActive(item.path) ? 'text-orange-500' : 'text-gray-500 hover:text-black'
+                    }`}
+                  >
+                    {item.name}
+                    {isActive(item.path) && (
+                      <motion.div
+                        layoutId="nav-indicator"
+                        className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1 h-1 bg-orange-500 rounded-full"
+                      />
+                    )}
+                  </Link>
+                );
+              })}
 
-              <div className="w-px h-5 bg-gray-200 mx-3" />
+              <div className="w-px h-5 bg-gray-200 mx-2" />
 
               {user ? (
                 <div className="relative" ref={profileRef}>
                   <button
                     onClick={() => setProfileOpen(!profileOpen)}
-                    className="flex items-center space-x-2 pl-3 pr-2 py-2 rounded-full hover:bg-gray-50 transition-colors group"
+                    className="flex items-center space-x-2 pl-3 pr-2 py-2 rounded-full hover:bg-gray-50 transition-colors"
                   >
                     <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-black">
                       {(user.displayName?.[0] || user.email?.[0] || 'M').toUpperCase()}
@@ -106,7 +163,6 @@ export default function Navbar() {
                     </span>
                     <ChevronDown size={14} className={`text-gray-400 transition-transform ${profileOpen ? 'rotate-180' : ''}`} />
                   </button>
-
                   <AnimatePresence>
                     {profileOpen && (
                       <motion.div
@@ -116,20 +172,13 @@ export default function Navbar() {
                         transition={{ duration: 0.15 }}
                         className="absolute right-0 mt-2 w-48 bg-white rounded-2xl shadow-xl shadow-black/10 border border-gray-100 overflow-hidden"
                       >
-                        <Link
-                          to="/mypage"
-                          onClick={() => setProfileOpen(false)}
-                          className="flex items-center space-x-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors"
-                        >
-                          <Settings size={15} />
-                          <span>My Page</span>
+                        <Link to="/mypage" onClick={() => setProfileOpen(false)}
+                          className="flex items-center space-x-3 px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors">
+                          <Settings size={15} /><span>My Page</span>
                         </Link>
-                        <button
-                          onClick={handleLogout}
-                          className="flex items-center space-x-3 w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors border-t border-gray-50"
-                        >
-                          <LogOut size={15} />
-                          <span>Logout</span>
+                        <button onClick={handleLogout}
+                          className="flex items-center space-x-3 w-full px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50 hover:text-orange-500 transition-colors border-t border-gray-50">
+                          <LogOut size={15} /><span>Logout</span>
                         </button>
                       </motion.div>
                     )}
@@ -138,15 +187,15 @@ export default function Navbar() {
               ) : (
                 <button
                   onClick={() => openAuth('login')}
-                  className="ml-2 bg-black text-white px-6 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-orange-500 transition-all duration-200"
+                  className="ml-2 bg-black text-white px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-orange-500 transition-all"
                 >
                   Log In
                 </button>
               )}
             </div>
 
-            {/* Mobile button */}
-            <div className="md:hidden flex items-center space-x-3">
+            {/* Mobile */}
+            <div className="lg:hidden flex items-center space-x-3">
               {user && (
                 <Link to="/mypage">
                   <div className="w-8 h-8 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-black">
@@ -168,31 +217,66 @@ export default function Navbar() {
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="md:hidden bg-white border-t border-gray-50 overflow-hidden"
+              className="lg:hidden bg-white border-t border-gray-50 overflow-hidden"
             >
               <div className="px-4 py-4 space-y-1">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.path}
-                    to={link.path}
-                    onClick={() => setIsOpen(false)}
-                    className={`block px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
-                      location.pathname === link.path
-                        ? 'bg-orange-50 text-orange-500'
-                        : 'text-gray-600 hover:bg-gray-50'
-                    }`}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
+                {navItems.map((item) => {
+                  if (item.children) {
+                    return (
+                      <div key={item.name}>
+                        <button
+                          onClick={() => setMobileAboutOpen(!mobileAboutOpen)}
+                          className={`flex items-center justify-between w-full px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                            isAboutActive ? 'bg-orange-50 text-orange-500' : 'text-gray-600 hover:bg-gray-50'
+                          }`}
+                        >
+                          <span>{item.name}</span>
+                          <ChevronDown size={14} className={`transition-transform ${mobileAboutOpen ? 'rotate-180' : ''}`} />
+                        </button>
+                        <AnimatePresence>
+                          {mobileAboutOpen && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: 'auto', opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              className="overflow-hidden pl-4"
+                            >
+                              {item.children.map((child) => (
+                                <Link
+                                  key={child.path}
+                                  to={child.path}
+                                  onClick={() => setIsOpen(false)}
+                                  className={`block px-4 py-2.5 text-sm font-medium ${
+                                    isActive(child.path) ? 'text-orange-500' : 'text-gray-500'
+                                  }`}
+                                >
+                                  {child.name}
+                                </Link>
+                              ))}
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  }
+                  return (
+                    <Link
+                      key={item.path}
+                      to={item.path!}
+                      onClick={() => setIsOpen(false)}
+                      className={`block px-4 py-3 rounded-xl text-sm font-semibold transition-colors ${
+                        isActive(item.path) ? 'bg-orange-50 text-orange-500' : 'text-gray-600 hover:bg-gray-50'
+                      }`}
+                    >
+                      {item.name}
+                    </Link>
+                  );
+                })}
                 <div className="pt-2">
                   {user ? (
-                    <button
-                      onClick={handleLogout}
-                      className="flex items-center space-x-2 w-full px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:bg-gray-50"
-                    >
-                      <LogOut size={15} />
-                      <span>Logout</span>
+                    <button onClick={handleLogout}
+                      className="flex items-center space-x-2 w-full px-4 py-3 rounded-xl text-sm font-medium text-gray-400 hover:bg-gray-50">
+                      <LogOut size={15} /><span>Logout</span>
                     </button>
                   ) : (
                     <button

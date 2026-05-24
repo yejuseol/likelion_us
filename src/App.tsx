@@ -8,6 +8,9 @@ import Community from './pages/Community';
 import News from './pages/News';
 import FAQ from './pages/FAQ';
 import MyPage from './pages/MyPage';
+import WhatWeDo from './pages/WhatWeDo';
+import PartnerWithUs from './pages/PartnerWithUs';
+import Contact from './pages/Contact';
 
 class ErrorBoundary extends Component<
   { children: ReactNode },
@@ -101,8 +104,11 @@ export default function App() {
           <main className="flex-grow">
             <Routes>
               <Route path="/" element={<Home />} />
+              <Route path="/what-we-do" element={<WhatWeDo />} />
               <Route path="/community" element={<Community />} />
               <Route path="/news" element={<News />} />
+              <Route path="/partners" element={<PartnerWithUs />} />
+              <Route path="/contact" element={<Contact />} />
               <Route path="/faq" element={<FAQ />} />
               <Route path="/mypage" element={<MyPage />} />
               <Route path="/terms" element={<Terms />} />
