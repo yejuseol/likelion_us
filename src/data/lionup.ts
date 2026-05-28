@@ -33,6 +33,7 @@ export const lionUpProjects: LionUpProject[] = [
 ];
 
 // Apply form URL — replace with real Google Form once available
+// Used by: Home page "Apply for Lion-Up" button AND Community page Lion-Up section
 export const lionUpApplyUrl = 'https://docs.google.com/forms/d/REPLACE_ME/viewform';
 
 // Contact for inquiries

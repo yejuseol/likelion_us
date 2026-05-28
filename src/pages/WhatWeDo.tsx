@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { Plus, Minus, Users, GraduationCap, Globe2, ArrowRight, Mail, Calendar, Handshake } from 'lucide-react';
+import { Plus, Minus, Users, GraduationCap, Globe2, ArrowRight, Mail, Calendar, Handshake, ExternalLink } from 'lucide-react';
 import { intro, coreAreas, kTechPosters, CoreArea } from '../data/whatwedo';
 
 const iconFor: Record<CoreArea['slug'], React.ReactNode> = {
@@ -104,19 +104,49 @@ export default function WhatWeDo() {
 
                           {/* K-Tech Pioneers showcase under Ecosystem */}
                           {area.hasShowcase && (
-                            <div className="pt-6 border-t border-gray-100">
-                              <div className="flex items-center justify-between mb-5">
-                                <div>
-                                  <p className="text-xs font-black uppercase tracking-widest text-orange-500 mb-1">Featured Initiative</p>
-                                  <h4 className="text-xl font-black tracking-tight uppercase">K-Tech Pioneers</h4>
+                            <div className="pt-6 border-t border-gray-100 space-y-6">
+                              <div>
+                                <p className="text-xs font-black uppercase tracking-widest text-orange-500 mb-1">Featured Initiative</p>
+                                <h4 className="text-2xl font-black tracking-tight uppercase">K-Tech Pioneers</h4>
+                                <p className="text-xs font-bold uppercase tracking-widest text-gray-400 mt-1">Global Open Innovation Project</p>
+                              </div>
+
+                              <p className="text-sm text-gray-600 leading-relaxed">
+                                K-Tech Pioneers connects globally-active Korean scientific and engineering talents with
+                                domestic frontier companies — building cross-border bridges for new growth engines through
+                                joint R&amp;D, PoCs, IP licensing, joint ventures, investment, and business development.
+                              </p>
+
+                              {/* Quick facts grid */}
+                              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div className="p-4 bg-orange-50/60 rounded-xl">
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-orange-600 mb-1.5">Who Applies</p>
+                                  <p className="text-xs text-gray-700 leading-relaxed">
+                                    Korean (pre-)founders and teams with advanced tech — AI, robotics, bio, semiconductors, mobility, quantum, cybersecurity, and more.
+                                  </p>
+                                </div>
+                                <div className="p-4 bg-orange-50/60 rounded-xl">
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-orange-600 mb-1.5">Partner Companies</p>
+                                  <p className="text-xs text-gray-700 leading-relaxed">
+                                    DB Insurance, KT, Hyundai Motor Group, Kakao Mobility, AmorePacific, AhnLab, LG Science Park, SK Innovation, Toss, Upstage, and more.
+                                  </p>
+                                </div>
+                                <div className="p-4 bg-orange-50/60 rounded-xl">
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-orange-600 mb-1.5">Support Offered</p>
+                                  <p className="text-xs text-gray-700 leading-relaxed">
+                                    ~₩200M commercialization fund, Seoul office space, AI/SW credits, legal & IP consulting, 1:1 manager, business &amp; investor matching.
+                                  </p>
+                                </div>
+                                <div className="p-4 bg-orange-50/60 rounded-xl">
+                                  <p className="text-[10px] font-black uppercase tracking-widest text-orange-600 mb-1.5">Hosted By</p>
+                                  <p className="text-xs text-gray-700 leading-relaxed">
+                                    Ministry of Science and ICT (MSIT) · National IT Industry Promotion Agency (NIPA) · LIKELION
+                                  </p>
                                 </div>
                               </div>
-                              {kTechPosters.length === 0 ? (
-                                <div className="bg-gradient-to-br from-orange-50 to-orange-100/50 rounded-2xl p-8 text-center border border-dashed border-orange-200">
-                                  <p className="text-sm font-bold text-orange-700 mb-1">Poster gallery coming soon</p>
-                                  <p className="text-xs text-orange-600/70">Instagram posters from recent K-Tech Pioneers events will be shown here.</p>
-                                </div>
-                              ) : (
+
+                              {/* Poster gallery (placeholder) */}
+                              {kTechPosters.length > 0 && (
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                                   {kTechPosters.map((src, i) => (
                                     <div key={i} className="aspect-square rounded-2xl overflow-hidden bg-gray-100">
@@ -126,6 +156,17 @@ export default function WhatWeDo() {
                                   ))}
                                 </div>
                               )}
+
+                              {/* Official site link */}
+                              <a
+                                href="https://www.ktechpioneers.com"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-2 bg-black text-white px-6 py-3.5 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-orange-500 transition-colors"
+                              >
+                                <span>Learn more at ktechpioneers.com</span>
+                                <ExternalLink size={13} />
+                              </a>
                             </div>
                           )}
                         </div>

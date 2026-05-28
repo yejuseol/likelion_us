@@ -1,9 +1,9 @@
 import { motion } from 'motion/react';
-import { Users, BookOpen, Rocket, Mail, Instagram, ArrowRight } from 'lucide-react';
+import { Users, BookOpen, Rocket, Mail, Instagram, ArrowRight, FileText } from 'lucide-react';
 import { useStorageImage, FALLBACK_COMMUNITY } from '../data/photos';
 import { schools } from '../data/schools';
 import { communityStats } from '../data/stats';
-import { lionUpProjects, lionUpContactEmail } from '../data/lionup';
+import { lionUpProjects, lionUpContactEmail, lionUpApplyUrl } from '../data/lionup';
 
 const stats = [
   { label: communityStats.yearsActive, value: communityStats.yearsLabel, icon: <BookOpen size={20} /> },
@@ -79,16 +79,16 @@ export default function Community() {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
             <div className="relative order-2 md:order-1 bg-white p-8 rounded-3xl shadow-xl border border-gray-100">
               <div className="relative w-full aspect-[5/3] bg-gray-50 rounded-2xl overflow-hidden">
-                {/* US continental outline (approximate but US-shaped) */}
+                {/* US continental outline — wider on west coast & Florida to encompass all schools */}
                 <svg viewBox="0 0 1000 600" className="absolute inset-0 w-full h-full" preserveAspectRatio="none">
                   {/* Continental US */}
                   <path
-                    d="M 175,100 L 165,140 L 150,180 L 142,220 L 132,260 L 138,295 L 158,335 L 195,385 L 218,408 L 280,403 L 360,402 L 410,408 L 440,440 L 475,470 L 520,495 L 545,490 L 580,485 L 605,495 L 635,485 L 690,475 L 740,475 L 750,505 L 762,540 L 775,565 L 790,555 L 795,515 L 795,475 L 803,455 L 825,425 L 845,400 L 830,375 L 842,355 L 855,335 L 875,318 L 895,295 L 920,272 L 945,225 L 955,185 L 925,155 L 860,150 L 805,155 L 760,170 L 720,175 L 705,165 L 660,155 L 615,140 L 565,130 L 510,120 L 440,108 L 360,100 L 280,95 L 210,95 Z"
+                    d="M 130,90 L 122,135 L 115,170 L 118,210 L 115,255 L 122,290 L 130,310 L 145,335 L 165,360 L 185,385 L 210,402 L 217,420 L 280,425 L 320,440 L 380,437 L 440,460 L 480,485 L 525,498 L 555,490 L 600,485 L 620,498 L 650,488 L 690,485 L 745,485 L 750,510 L 765,540 L 778,565 L 790,572 L 793,545 L 795,510 L 793,478 L 803,455 L 820,425 L 838,400 L 862,385 L 833,365 L 848,355 L 858,330 L 882,308 L 905,285 L 920,260 L 920,235 L 935,210 L 955,170 L 940,150 L 920,140 L 870,138 L 830,148 L 780,158 L 740,170 L 720,175 L 705,180 L 715,158 L 700,140 L 660,150 L 615,142 L 575,135 L 540,125 L 480,115 L 410,108 L 340,105 L 270,100 L 200,95 Z"
                     className="fill-gray-200"
                   />
                   {/* Hawaii inset box (bottom-left corner) */}
-                  <rect x="100" y="535" width="120" height="50" rx="6" className="fill-gray-200" />
-                  <text x="160" y="595" textAnchor="middle" className="fill-gray-400 text-[9px] font-bold uppercase tracking-widest">Hawaii</text>
+                  <rect x="100" y="535" width="140" height="55" rx="6" className="fill-gray-200" />
+                  <text x="170" y="588" textAnchor="middle" className="fill-gray-400 text-[9px] font-bold uppercase tracking-widest">Hawaii</text>
                 </svg>
 
                 {/* School pins (positioned by %) */}
@@ -124,9 +124,6 @@ export default function Community() {
                 Each chapter operates independently while staying aligned with the overall direction of the network.
                 Wherever we are, our passion continues — and that passion becomes the connection that brings us together.
               </p>
-              <div className="pt-2 text-xs text-gray-400 leading-relaxed">
-                ※ School list maintained in <code className="px-1.5 py-0.5 bg-gray-100 rounded text-orange-600">src/data/schools.ts</code> — add/edit entries there.
-              </div>
             </div>
           </div>
         </div>
@@ -210,27 +207,50 @@ export default function Community() {
             </div>
           )}
 
-          {/* CTA */}
-          <div className="bg-black text-white rounded-3xl p-8 md:p-12 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          {/* CTA — two options: Google Form (when ready) + Email */}
+          <div className="bg-black text-white rounded-3xl p-8 md:p-12 space-y-6">
             <div className="space-y-2">
               <p className="text-xs font-bold uppercase tracking-widest text-orange-400">Interested?</p>
               <h3 className="text-2xl md:text-3xl font-black tracking-tight uppercase leading-tight">
-                Email us with your details
+                Apply or get in touch
               </h3>
               <p className="text-sm text-gray-400 max-w-xl">
-                Fill in the items shown on the application guide and send to{' '}
+                Submit the Google Form once available, or email us directly at{' '}
                 <a href={`mailto:${lionUpContactEmail}`} className="text-orange-400 font-bold hover:underline">
                   {lionUpContactEmail}
-                </a>{' '}
-                — we'll get back with next steps.
+                </a>
+                {' '}with the items from the application guide.
               </p>
             </div>
-            <a href={`mailto:${lionUpContactEmail}?subject=${encodeURIComponent('Lion-Up Inquiry')}`}
-              className="inline-flex items-center gap-2 bg-orange-500 text-white px-6 py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all shadow-lg shadow-orange-500/30 flex-shrink-0">
-              <Mail size={16} />
-              <span>Email Simba</span>
-              <ArrowRight size={14} />
-            </a>
+            <div className="flex flex-col sm:flex-row gap-3">
+              {/* Google Form button — placeholder until URL is provided */}
+              <a
+                href={lionUpApplyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => {
+                  if (lionUpApplyUrl.includes('REPLACE_ME')) {
+                    e.preventDefault();
+                    alert('Application form coming soon. For now, please email simba@likelion.net.');
+                  }
+                }}
+                className={`inline-flex items-center justify-center gap-2 px-6 py-4 rounded-full font-bold uppercase tracking-widest text-sm transition-all shadow-lg flex-shrink-0 ${
+                  lionUpApplyUrl.includes('REPLACE_ME')
+                    ? 'bg-gray-700 text-gray-300 hover:bg-gray-600 cursor-pointer'
+                    : 'bg-orange-500 text-white hover:bg-white hover:text-black shadow-orange-500/30'
+                }`}
+              >
+                <FileText size={16} />
+                <span>{lionUpApplyUrl.includes('REPLACE_ME') ? 'Apply Form (Coming Soon)' : 'Apply via Google Form'}</span>
+                <ArrowRight size={14} />
+              </a>
+              {/* Email button — always works */}
+              <a href={`mailto:${lionUpContactEmail}?subject=${encodeURIComponent('Lion-Up Inquiry')}`}
+                className="inline-flex items-center justify-center gap-2 border border-white/30 text-white px-6 py-4 rounded-full font-bold uppercase tracking-widest text-sm hover:bg-white hover:text-black transition-all flex-shrink-0">
+                <Mail size={16} />
+                <span>Email Simba</span>
+              </a>
+            </div>
           </div>
         </div>
       </section>
